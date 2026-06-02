@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "olink-viewer",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8788", "--directory", "/Users/seongmin/Desktop/Github-repo/olink-ht-viewer"],
+      "port": 8788
+    }
+  ]
+}
