@@ -27,7 +27,32 @@
     gap: 8px;
   }
   #project-title { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.02em; }
-  #header-sub { font-size: 0.85rem; color: #adb5bd; }
+  #header-sub    { font-size: 0.85rem; color: #adb5bd; }
+
+  /* ── Tab bar ── */
+  #tab-bar {
+    background: #fff;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0 28px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .tab {
+    padding: 12px 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+    user-select: none;
+  }
+  .tab:hover  { color: #1a1a2e; }
+  .tab.active { color: #1a1a2e; border-bottom-color: #4E79A7; }
 
   /* ── Summary cards ── */
   #summary {
@@ -51,7 +76,7 @@
   .card-value.remain { color: #59A14F; }
   .card-value.warn   { color: #E15759; }
 
-  /* ── Plates container ── */
+  /* ── Plates ── */
   #plates {
     display: flex;
     gap: 20px;
@@ -59,7 +84,6 @@
     flex-wrap: wrap;
     justify-content: center;
   }
-
   .plate-wrapper {
     background: #fff;
     border-radius: 12px;
@@ -93,7 +117,6 @@
     color: #adb5bd;
     font-weight: 500;
   }
-
   .well {
     aspect-ratio: 1;
     border-radius: 50%;
@@ -108,40 +131,21 @@
     font-size: 0.48rem;
     font-weight: 700;
     color: #fff;
-    letter-spacing: 0;
     overflow: hidden;
   }
   .well:hover { transform: scale(1.22); box-shadow: 0 3px 10px rgba(0,0,0,.22); z-index: 10; }
 
-  /* QC well styles */
+  /* QC wells */
   .well.sc { background: #495057; border-color: #343a40; }
   .well.pc { background: #868e96; border-color: #6c757d; }
   .well.nc { background: #ced4da; border-color: #adb5bd; color: #495057; }
 
-  /* Sample type inner markers */
-  .well .marker {
-    position: absolute;
-    pointer-events: none;
-  }
-  /* Serum: dashed border overlay */
+  /* Sample type markers */
+  .well .marker { position: absolute; pointer-events: none; }
   .well.type-serum { border-style: dashed; border-width: 3px; }
-  /* Urine: yellow dot */
-  .well.type-urine .marker {
-    width: 35%; height: 35%;
-    background: #FFD700;
-    border-radius: 50%;
-  }
-  /* CSF: blue dot */
-  .well.type-csf .marker {
-    width: 35%; height: 35%;
-    background: #228be6;
-    border-radius: 50%;
-  }
-  /* Cell lysate: X lines via SVG */
-  .well.type-cell-lysate .marker {
-    width: 55%; height: 55%;
-  }
-  /* 기타: 흰색 ? 표시 */
+  .well.type-urine .marker { width:35%; height:35%; background:#FFD700; border-radius:50%; }
+  .well.type-csf   .marker { width:35%; height:35%; background:#228be6; border-radius:50%; }
+  .well.type-cell-lysate .marker { width:55%; height:55%; }
   .well.type-other::after {
     content: "?";
     position: absolute;
@@ -150,8 +154,6 @@
     color: rgba(255,255,255,0.85);
     pointer-events: none;
   }
-
-  /* Tissue lysate: diagonal hatch via repeating-linear-gradient on pseudo */
   .well.type-tissue-lysate::after {
     content: "";
     position: absolute;
@@ -159,10 +161,8 @@
     border-radius: 50%;
     background: repeating-linear-gradient(
       45deg,
-      rgba(255,255,255,0.35) 0px,
-      rgba(255,255,255,0.35) 2px,
-      transparent 2px,
-      transparent 5px
+      rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 2px,
+      transparent 2px, transparent 5px
     );
     pointer-events: none;
   }
@@ -190,44 +190,54 @@
   #legend {
     background: #fff;
     border-radius: 12px;
-    margin: 0 28px 18px;
-    padding: 16px 20px;
+    margin: 0 28px 0;
+    padding: 20px 24px;
     box-shadow: 0 1px 4px rgba(0,0,0,.08);
   }
-  #legend h3 { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
-
-  .legend-section { margin-bottom: 12px; }
-  .legend-section-title { font-size: 0.72rem; color: #868e96; margin-bottom: 6px; font-weight: 600; }
-
-  .legend-items { display: flex; flex-wrap: wrap; gap: 8px; }
+  #legend h3 {
+    font-size: 1.0rem;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .legend-section { margin-bottom: 14px; }
+  .legend-section-title {
+    font-size: 0.95rem;
+    color: #6c757d;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 10px; }
   .legend-item {
-    display: flex; align-items: center; gap: 7px;
-    font-size: 0.75rem; color: #495057;
-    background: #f8f9fa; border-radius: 6px;
-    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.0rem;
+    color: #495057;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 5px 12px;
   }
   .legend-swatch {
-    width: 14px; height: 14px;
+    width: 18px; height: 18px;
     border-radius: 50%;
     border: 2px solid rgba(0,0,0,.12);
     flex-shrink: 0;
     position: relative;
   }
-  /* QC swatches */
   .legend-item.qc-sc .legend-swatch { background: #495057; }
   .legend-item.qc-pc .legend-swatch { background: #868e96; }
   .legend-item.qc-nc .legend-swatch { background: #ced4da; }
 
-  /* Type pattern swatches */
-  .swatch-plasma { /* plain */ }
-  .swatch-serum  { border-style: dashed !important; border-width: 2px !important; }
-  .swatch-urine::after  { content:""; position:absolute; inset:25%; border-radius:50%; background:#FFD700; }
-  .swatch-csf::after    { content:""; position:absolute; inset:25%; border-radius:50%; background:#228be6; }
+  .swatch-serum { border-style: dashed !important; border-width: 2px !important; }
+  .swatch-urine::after { content:""; position:absolute; inset:25%; border-radius:50%; background:#FFD700; }
+  .swatch-csf::after   { content:""; position:absolute; inset:25%; border-radius:50%; background:#228be6; }
   .swatch-cell-lysate::after {
     content:"✕"; position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
-    font-size:9px; font-weight:900; color:rgba(0,0,0,.5);
-    border-radius:50%;
+    font-size:10px; font-weight:900; color:rgba(0,0,0,.5);
   }
   .swatch-tissue-lysate {
     background: repeating-linear-gradient(
@@ -235,13 +245,37 @@
     ) !important;
   }
 
+  /* ── Note section ── */
+  #note-section {
+    background: #fff;
+    border-radius: 12px;
+    margin: 14px 28px 0;
+    padding: 18px 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  #note-section h3 {
+    font-size: 1.0rem;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  #note-text {
+    font-size: 1.0rem;
+    color: #495057;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  #note-section.empty { display: none; }
+
   /* ── Footer ── */
   #footer {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    padding: 0 28px 24px;
+    padding: 18px 28px 24px;
     flex-wrap: wrap;
   }
   #last-update { font-size: 0.78rem; color: #868e96; }
@@ -255,7 +289,7 @@
     cursor: pointer;
     transition: background .15s;
   }
-  #refresh-btn:hover { background: #2e2e50; }
+  #refresh-btn:hover    { background: #2e2e50; }
   #refresh-btn:disabled { background: #adb5bd; cursor: default; }
 
   #error-banner {
@@ -276,6 +310,8 @@
   <div id="project-title">KNUH Proteomics core</div>
   <div id="header-sub"></div>
 </div>
+
+<div id="tab-bar"></div>
 
 <div id="summary">
   <div class="card"><div class="card-label">유효 슬롯</div><div class="card-value" id="s-total">172</div></div>
@@ -310,13 +346,16 @@
   <div class="legend-section">
     <div class="legend-section-title">Sample Type</div>
     <div class="legend-items">
-      <div class="legend-item"><div class="legend-swatch swatch-plasma" style="background:#bbb"></div>Plasma</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#bbb"></div>Plasma</div>
       <div class="legend-item"><div class="legend-swatch swatch-serum"  style="background:#bbb"></div>Serum (점선)</div>
       <div class="legend-item"><div class="legend-swatch swatch-urine"  style="background:#bbb"></div>Urine (황색 점)</div>
       <div class="legend-item"><div class="legend-swatch swatch-csf"    style="background:#bbb"></div>CSF (청색 점)</div>
       <div class="legend-item"><div class="legend-swatch swatch-cell-lysate" style="background:#bbb"></div>Cell lysate (✕)</div>
       <div class="legend-item"><div class="legend-swatch swatch-tissue-lysate" style="background:#bbb"></div>Tissue lysate (사선)</div>
-      <div class="legend-item"><div class="legend-swatch" style="background:#bbb;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:rgba(255,255,255,0.85)">?</div>기타</div>
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#bbb;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:rgba(255,255,255,0.85)">?</div>
+        기타
+      </div>
     </div>
   </div>
   <div class="legend-section" id="requester-legend">
@@ -325,15 +364,20 @@
   </div>
 </div>
 
+<div id="note-section" class="empty">
+  <h3>Note</h3>
+  <div id="note-text"></div>
+</div>
+
 <div id="footer">
   <span id="last-update">마지막 업데이트: —</span>
-  <button id="refresh-btn" onclick="loadData()">새로고침</button>
+  <button id="refresh-btn" onclick="init()">새로고침</button>
 </div>
 
 <div id="tooltip"></div>
 
 <script>
-// ── Constants ───────────────────────────────────────────────
+// ── Constants ────────────────────────────────────────────────
 const ROWS = ['A','B','C','D','E','F','G','H'];
 const COLS = [1,2,3,4,5,6,7,8,9,10,11,12];
 const TOTAL_WELLS = 96;
@@ -345,14 +389,6 @@ const PALETTE = [
   '#D4A6C8','#86BCB6'
 ];
 
-// well name → index 0..95
-function wellIndex(name) {
-  const row = ROWS.indexOf(name[0].toUpperCase());
-  const col = parseInt(name.slice(1), 10) - 1;
-  return row * 12 + col;
-}
-
-// QC well sets (index in 0..95 within each plate)
 const QC = {
   plate1: {
     sc: ['G11','H11','A12'].map(wellIndex),
@@ -366,12 +402,6 @@ const QC = {
   }
 };
 
-// Well name from index
-function indexToWellName(idx) {
-  return ROWS[Math.floor(idx / 12)] + String(idx % 12 + 1).padStart(2,'0');
-}
-
-// Type → CSS class
 const TYPE_CLASS = {
   'plasma':        'type-plasma',
   'serum':         'type-serum',
@@ -382,98 +412,124 @@ const TYPE_CLASS = {
   '기타':          'type-other'
 };
 
-// SVG X marker for Cell lysate
-function xSVG(color) {
-  const c = encodeURIComponent(color || '#fff');
-  return `<svg class="marker" viewBox="0 0 10 10" width="55%" height="55%" xmlns="http://www.w3.org/2000/svg">
-    <line x1="1" y1="1" x2="9" y2="9" stroke="${decodeURIComponent(c)}" stroke-width="2.2" stroke-linecap="round"/>
-    <line x1="9" y1="1" x2="1" y2="9" stroke="${decodeURIComponent(c)}" stroke-width="2.2" stroke-linecap="round"/>
-  </svg>`;
-}
-
 // ── Mock data ────────────────────────────────────────────────
-const MOCK_DATA = {
-  project: "PROJ001",
-  samples: [
-    { request_code: "KPC-HT-001", sample_type: "Plasma",       sample_count: 10, request_date: "2026-05-01", receive_date: "2026-05-03" },
-    { request_code: "KPC-HT-001", sample_type: "Serum",        sample_count: 4,  request_date: "2026-05-01", receive_date: "" },
-    { request_code: "KPC-HT-002", sample_type: "Cell lysate",  sample_count: 6,  request_date: "2026-05-02", receive_date: "2026-05-04" },
-    { request_code: "KPC-HT-003", sample_type: "Urine",        sample_count: 12, request_date: "2026-05-05", receive_date: "2026-05-07" },
-    { request_code: "KPC-HT-004", sample_type: "CSF",          sample_count: 8,  request_date: "2026-05-06", receive_date: "" },
-    { request_code: "KPC-HT-005", sample_type: "Tissue lysate",sample_count: 16, request_date: "2026-05-08", receive_date: "2026-05-10" },
-    { request_code: "KPC-HT-006", sample_type: "Plasma",       sample_count: 24, request_date: "2026-05-09", receive_date: "2026-05-11" },
-    { request_code: "KPC-HT-007", sample_type: "Serum",        sample_count: 20, request_date: "2026-05-10", receive_date: "" },
-    { request_code: "KPC-HT-008", sample_type: "Plasma",       sample_count: 18, request_date: "2026-05-11", receive_date: "2026-05-13" }
+const MOCK_PROJECTS = [
+  { status: 'active',  id: 'PROJ001', description: '2026 KNU CKD Plasma Cohort\n신장내과 협력 연구. Plasma 및 Serum 시료 분석.' },
+  { status: 'active',  id: 'PROJ002', description: '2026 Neurology CSF Study\n신경과 CSF 및 Plasma 코호트.' },
+  { status: 'hidden',  id: 'PROJ003', description: '이 프로젝트는 숨김 처리됨 (hidden)' }
+];
+
+const MOCK_SAMPLES = {
+  'PROJ001': [
+    { request_code:"KPC-HT-001", sample_type:"Plasma",       sample_count:10, request_date:"2026-05-01", receive_date:"2026-05-03" },
+    { request_code:"KPC-HT-001", sample_type:"Serum",        sample_count:4,  request_date:"2026-05-01", receive_date:"" },
+    { request_code:"KPC-HT-002", sample_type:"Cell lysate",  sample_count:6,  request_date:"2026-05-02", receive_date:"2026-05-04" },
+    { request_code:"KPC-HT-003", sample_type:"Urine",        sample_count:12, request_date:"2026-05-05", receive_date:"2026-05-07" },
+    { request_code:"KPC-HT-004", sample_type:"CSF",          sample_count:8,  request_date:"2026-05-06", receive_date:"" },
+    { request_code:"KPC-HT-005", sample_type:"Tissue lysate",sample_count:16, request_date:"2026-05-08", receive_date:"2026-05-10" },
+    { request_code:"KPC-HT-006", sample_type:"Plasma",       sample_count:24, request_date:"2026-05-09", receive_date:"2026-05-11" },
+    { request_code:"KPC-HT-007", sample_type:"Serum",        sample_count:20, request_date:"2026-05-10", receive_date:"" },
+    { request_code:"KPC-HT-008", sample_type:"Plasma",       sample_count:18, request_date:"2026-05-11", receive_date:"2026-05-13" }
+  ],
+  'PROJ002': [
+    { request_code:"KPC-HT-010", sample_type:"CSF",    sample_count:20, request_date:"2026-06-01", receive_date:"2026-06-03" },
+    { request_code:"KPC-HT-011", sample_type:"Plasma", sample_count:15, request_date:"2026-06-02", receive_date:"" },
+    { request_code:"KPC-HT-012", sample_type:"Serum",  sample_count:10, request_date:"2026-06-02", receive_date:"2026-06-05" }
   ]
 };
 
 // ── State ────────────────────────────────────────────────────
-let colorMap = {};  // request_code → hex color
+let colorMap  = {};
 let colorIdx  = 0;
+let activeTab = null;  // 현재 선택된 project id
 
 function getColor(code) {
-  if (!colorMap[code]) {
-    colorMap[code] = PALETTE[colorIdx % PALETTE.length];
-    colorIdx++;
-  }
+  if (!colorMap[code]) { colorMap[code] = PALETTE[colorIdx++ % PALETTE.length]; }
   return colorMap[code];
 }
 
-// ── Build plate grid DOM ─────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────
+function wellIndex(name) {
+  const row = ROWS.indexOf(name[0].toUpperCase());
+  const col = parseInt(name.slice(1), 10) - 1;
+  return row * 12 + col;
+}
+function indexToWellName(idx) {
+  return ROWS[Math.floor(idx / 12)] + String(idx % 12 + 1).padStart(2,'0');
+}
+function fmtDate(str) {
+  if (!str) return '—';
+  const d = new Date(str);
+  if (isNaN(d)) return str;
+  const days = ['일','월','화','수','목','금','토'];
+  const yyyy = d.getFullYear();
+  const mm   = String(d.getMonth() + 1).padStart(2, '0');
+  const dd   = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd} (${days[d.getDay()]})`;
+}
+function xSVG(color) {
+  return `<svg class="marker" viewBox="0 0 10 10" width="55%" height="55%" xmlns="http://www.w3.org/2000/svg">
+    <line x1="1" y1="1" x2="9" y2="9" stroke="${color||'#fff'}" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="9" y1="1" x2="1" y2="9" stroke="${color||'#fff'}" stroke-width="2.2" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ── Tab bar ──────────────────────────────────────────────────
+function buildTabs(projects) {
+  const bar = document.getElementById('tab-bar');
+  bar.innerHTML = '';
+  projects.forEach(p => {
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (p.id === activeTab ? ' active' : '');
+    tab.textContent = p.id;
+    tab.dataset.id  = p.id;
+    tab.addEventListener('click', () => selectTab(p.id));
+    bar.appendChild(tab);
+  });
+}
+
+function selectTab(id) {
+  activeTab = id;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.id === id);
+  });
+  loadProjectData(id);
+}
+
+// ── Plate grid ───────────────────────────────────────────────
 function buildPlateGrid(plateId) {
   const grid = document.getElementById(plateId);
   grid.innerHTML = '';
-
-  // top-left corner
-  const corner = document.createElement('div');
-  grid.appendChild(corner);
-
-  // column headers
+  grid.appendChild(document.createElement('div')); // corner
   COLS.forEach(c => {
-    const lbl = document.createElement('div');
-    lbl.className = 'axis-label';
-    lbl.textContent = c;
-    grid.appendChild(lbl);
+    const l = document.createElement('div'); l.className = 'axis-label'; l.textContent = c;
+    grid.appendChild(l);
   });
-
-  // rows
   ROWS.forEach(r => {
-    const rowLbl = document.createElement('div');
-    rowLbl.className = 'axis-label';
-    rowLbl.textContent = r;
-    grid.appendChild(rowLbl);
-
+    const l = document.createElement('div'); l.className = 'axis-label'; l.textContent = r;
+    grid.appendChild(l);
     COLS.forEach(c => {
-      const well = document.createElement('div');
-      well.className = 'well';
-      const idx = wellIndex(r + c);
-      well.dataset.idx = idx;
-      well.dataset.plate = plateId;
-      grid.appendChild(well);
+      const w = document.createElement('div');
+      w.className = 'well';
+      w.dataset.idx   = wellIndex(r + c);
+      w.dataset.plate = plateId;
+      grid.appendChild(w);
     });
   });
 }
 
-// ── Assign samples to wells ──────────────────────────────────
+// ── Well assignment ──────────────────────────────────────────
 function assignWells(samples) {
-  // build per-plate assignment arrays: null = empty, 'sc'/'pc'/'nc' = QC, or object
-  const plates = [
-    Array(TOTAL_WELLS).fill(null),
-    Array(TOTAL_WELLS).fill(null)
-  ];
-  const qcSets = [QC.plate1, QC.plate2];
-
-  // mark QC wells
+  const plates  = [Array(TOTAL_WELLS).fill(null), Array(TOTAL_WELLS).fill(null)];
+  const qcSets  = [QC.plate1, QC.plate2];
   [0,1].forEach(pi => {
     const qc = qcSets[pi];
-    qc.sc.forEach(i => plates[pi][i] = { qc: 'sc' });
-    qc.pc.forEach(i => plates[pi][i] = { qc: 'pc' });
-    qc.nc.forEach(i => plates[pi][i] = { qc: 'nc' });
+    qc.sc.forEach(i => plates[pi][i] = { qc:'sc' });
+    qc.pc.forEach(i => plates[pi][i] = { qc:'pc' });
+    qc.nc.forEach(i => plates[pi][i] = { qc:'nc' });
   });
 
-  // cursor for filling: [plateIndex, wellIndex]
   let pi = 0, wi = 0;
-
   function nextEmpty() {
     while (pi < 2) {
       if (wi >= TOTAL_WELLS) { pi++; wi = 0; continue; }
@@ -484,60 +540,44 @@ function assignWells(samples) {
   }
 
   samples.forEach(s => {
-    const color = getColor(s.request_code);
+    const color   = getColor(s.request_code);
     const typeKey = (s.sample_type || '').toLowerCase();
-    let remaining = s.sample_count;
-
-    while (remaining > 0 && nextEmpty()) {
+    let rem = s.sample_count;
+    while (rem > 0 && nextEmpty()) {
       plates[pi][wi] = {
         request_code: s.request_code,
         sample_type:  s.sample_type,
         request_date: s.request_date,
         receive_date: s.receive_date,
-        color,
-        typeKey,
+        color, typeKey,
         plateNum: pi + 1,
         wellName: indexToWellName(wi)
       };
-      remaining--;
-      wi++;
+      rem--; wi++;
     }
   });
-
   return plates;
 }
 
 // ── Render wells ─────────────────────────────────────────────
 function renderWells(plates) {
   ['plate1','plate2'].forEach((pid, pi) => {
-    const grid = document.getElementById(pid);
-    const wellEls = grid.querySelectorAll('.well');
-    wellEls.forEach(el => {
-      const idx = parseInt(el.dataset.idx);
-      const data = plates[pi][idx];
+    document.getElementById(pid).querySelectorAll('.well').forEach(el => {
+      const data = plates[pi][parseInt(el.dataset.idx)];
       el.className = 'well';
       el.innerHTML = '';
-      el.removeAttribute('data-tip');
+      el.removeAttribute('data-code');
 
-      if (!data) {
-        // empty
-        return;
-      }
+      if (!data) return;
       if (data.qc) {
         el.classList.add(data.qc);
         el.textContent = data.qc.toUpperCase();
-        el.dataset.tip = data.qc.toUpperCase();
         return;
       }
-
-      // sample well
-      el.style.background = data.color;
+      el.style.background  = data.color;
       el.style.borderColor = data.color;
+      el.classList.add(TYPE_CLASS[data.typeKey] || 'type-other');
 
-      const typeClass = TYPE_CLASS[data.typeKey] || 'type-other';
-      el.classList.add(typeClass);
-
-      // inner markers
       if (data.typeKey === 'urine') {
         const m = document.createElement('div'); m.className = 'marker';
         m.style.cssText = 'width:35%;height:35%;background:#FFD700;border-radius:50%;';
@@ -550,28 +590,12 @@ function renderWells(plates) {
         el.insertAdjacentHTML('beforeend', xSVG('#fff'));
       }
 
-      // tooltip data
       el.dataset.code    = data.request_code;
       el.dataset.type    = data.sample_type;
       el.dataset.reqdate = data.request_date;
       el.dataset.recdate = data.receive_date;
-      el.dataset.pos     = `Plate ${data.plateNum} - ${data.wellName}`;
     });
   });
-}
-
-// ── Date formatter ───────────────────────────────────────────
-// "Mon Jun 01 2026 00:00:00 GMT+0900 ..." 또는 "2026-05-01" 모두 처리
-function fmtDate(str) {
-  if (!str) return '—';
-  const d = new Date(str);
-  if (isNaN(d)) return str;
-  const days = ['일','월','화','수','목','금','토'];
-  const yyyy = d.getFullYear();
-  const mm   = String(d.getMonth() + 1).padStart(2, '0');
-  const dd   = String(d.getDate()).padStart(2, '0');
-  const dow  = days[d.getDay()];
-  return `${yyyy}-${mm}-${dd} (${dow})`;
 }
 
 // ── Tooltip ──────────────────────────────────────────────────
@@ -580,39 +604,28 @@ const tooltip = document.getElementById('tooltip');
 document.getElementById('plates').addEventListener('mousemove', e => {
   const well = e.target.closest('.well');
   if (!well || !well.dataset.code) { tooltip.classList.remove('show'); return; }
-
-  const recDate = well.dataset.recdate || '';
+  const rec = well.dataset.recdate || '';
   tooltip.innerHTML =
     `<strong>의뢰자 코드</strong>: ${well.dataset.code}<br>` +
     `<strong>샘플 타입</strong>: ${well.dataset.type}<br>` +
     `<strong>의뢰일</strong>: ${fmtDate(well.dataset.reqdate)}<br>` +
-    `<strong>수령일</strong>: ${recDate ? fmtDate(recDate) : '미수령'}`;
-
+    `<strong>수령일</strong>: ${rec ? fmtDate(rec) : '미수령'}`;
   tooltip.classList.add('show');
   positionTooltip(e);
 });
-
-document.getElementById('plates').addEventListener('mouseleave', () => {
-  tooltip.classList.remove('show');
-});
-
-document.addEventListener('mousemove', e => {
-  if (tooltip.classList.contains('show')) positionTooltip(e);
-});
+document.getElementById('plates').addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+document.addEventListener('mousemove', e => { if (tooltip.classList.contains('show')) positionTooltip(e); });
 
 function positionTooltip(e) {
-  const margin = 14;
-  let x = e.clientX + margin;
-  let y = e.clientY + margin;
-  const tw = tooltip.offsetWidth  || 220;
-  const th = tooltip.offsetHeight || 120;
-  if (x + tw > window.innerWidth  - 8) x = e.clientX - tw - margin;
-  if (y + th > window.innerHeight - 8) y = e.clientY - th - margin;
-  tooltip.style.left = x + 'px';
-  tooltip.style.top  = y + 'px';
+  const m = 14;
+  let x = e.clientX + m, y = e.clientY + m;
+  const tw = tooltip.offsetWidth || 220, th = tooltip.offsetHeight || 110;
+  if (x + tw > window.innerWidth  - 8) x = e.clientX - tw - m;
+  if (y + th > window.innerHeight - 8) y = e.clientY - th - m;
+  tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px';
 }
 
-// ── Requester legend ─────────────────────────────────────────
+// ── Legend ───────────────────────────────────────────────────
 function buildRequesterLegend() {
   const container = document.getElementById('requester-legend-items');
   container.innerHTML = '';
@@ -622,60 +635,88 @@ function buildRequesterLegend() {
     item.innerHTML = `<div class="legend-swatch" style="background:${color}"></div>${code}`;
     container.appendChild(item);
   });
-  if (!Object.keys(colorMap).length) {
-    document.getElementById('requester-legend').style.display = 'none';
+  document.getElementById('requester-legend').style.display =
+    Object.keys(colorMap).length ? '' : 'none';
+}
+
+// ── Note section ─────────────────────────────────────────────
+function updateNote(description) {
+  const section = document.getElementById('note-section');
+  const text    = document.getElementById('note-text');
+  if (description && description.trim()) {
+    text.textContent = description.trim();
+    section.classList.remove('empty');
   } else {
-    document.getElementById('requester-legend').style.display = '';
+    section.classList.add('empty');
   }
 }
 
 // ── Summary cards ────────────────────────────────────────────
 function updateSummary(samples) {
-  const used = samples.reduce((s, r) => s + (r.sample_count || 0), 0);
-  const remain = VALID_SLOTS - used;
+  const used      = samples.reduce((s, r) => s + (r.sample_count || 0), 0);
+  const remain    = VALID_SLOTS - used;
   const requesters = new Set(samples.map(r => r.request_code)).size;
-
-  document.getElementById('s-used').textContent = used;
-  document.getElementById('s-remain').textContent = remain;
+  document.getElementById('s-used').textContent       = used;
+  document.getElementById('s-remain').textContent     = remain;
   document.getElementById('s-requesters').textContent = requesters;
-
-  const remainEl = document.getElementById('s-remain');
-  remainEl.className = 'card-value ' + (remain < 20 ? 'warn' : 'remain');
+  document.getElementById('s-remain').className =
+    'card-value ' + (remain < 20 ? 'warn' : 'remain');
 }
 
-// ── Load / refresh ───────────────────────────────────────────
-async function loadData() {
+// ── API calls ────────────────────────────────────────────────
+async function fetchProjectList() {
+  if (CONFIG.USE_MOCK_DATA) {
+    await new Promise(r => setTimeout(r, 200));
+    // hidden 제외
+    return { projects: MOCK_PROJECTS.filter(p => p.status.toLowerCase() !== 'hidden') };
+  }
+  const res = await fetch(CONFIG.API_URL);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+async function fetchProjectData(projectId) {
+  if (CONFIG.USE_MOCK_DATA) {
+    await new Promise(r => setTimeout(r, 200));
+    return { project: projectId, samples: MOCK_SAMPLES[projectId] || [] };
+  }
+  const url = CONFIG.API_URL + '?project=' + encodeURIComponent(projectId);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+// ── Load project data (tab click or refresh) ─────────────────
+async function loadProjectData(projectId) {
   const btn = document.getElementById('refresh-btn');
-  btn.disabled = true;
-  btn.textContent = '로딩 중…';
+  btn.disabled = true; btn.textContent = '로딩 중…';
   document.getElementById('error-banner').style.display = 'none';
 
-  try {
-    let data;
-    if (CONFIG.USE_MOCK_DATA) {
-      await new Promise(r => setTimeout(r, 300)); // simulate network
-      data = MOCK_DATA;
-    } else {
-      const res = await fetch(CONFIG.API_URL);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      data = await res.json();
-      if (data.error) throw new Error(data.error);
-    }
+  // description은 이미 projects 배열에 있으므로 여기서 찾아서 표시
+  const descriptionEl = MOCK_PROJECTS.find(p => p.id === projectId);
+  // (실제 배포 시 projects 변수에서 찾음 — 아래 init()에서 저장)
 
-    // reset color assignments on each refresh
-    colorMap = {};
-    colorIdx = 0;
+  try {
+    const data = await fetchProjectData(projectId);
+    colorMap = {}; colorIdx = 0;
 
     document.getElementById('header-sub').textContent =
-      `${data.project}  |  ${fmtDate(new Date().toISOString())}`;
+      `${projectId}  |  ${fmtDate(new Date().toISOString())}`;
 
     buildPlateGrid('plate1');
     buildPlateGrid('plate2');
-
     const plates = assignWells(data.samples || []);
     renderWells(plates);
     updateSummary(data.samples || []);
     buildRequesterLegend();
+
+    // Note: currentProjects는 init()에서 저장한 전역 변수
+    const proj = (window._projects || []).find(p => p.id === projectId);
+    updateNote(proj ? proj.description : '');
 
     document.getElementById('last-update').textContent =
       '마지막 업데이트: ' + new Date().toLocaleTimeString('ko-KR');
@@ -685,18 +726,50 @@ async function loadData() {
     banner.textContent = '데이터 로드 실패: ' + err.message;
     banner.style.display = 'block';
   } finally {
-    btn.disabled = false;
-    btn.textContent = '새로고침';
-  }
-
-  // auto-refresh
-  if (CONFIG.REFRESH_INTERVAL_MS > 0) {
-    setTimeout(loadData, CONFIG.REFRESH_INTERVAL_MS);
+    btn.disabled = false; btn.textContent = '새로고침';
   }
 }
 
-// ── Init ─────────────────────────────────────────────────────
-loadData();
+// ── Init (페이지 로드 or 새로고침) ───────────────────────────
+async function init() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true; btn.textContent = '로딩 중…';
+  document.getElementById('error-banner').style.display = 'none';
+
+  try {
+    const listData = await fetchProjectList();
+    const projects = listData.projects || [];
+    window._projects = projects; // 전역 저장
+
+    if (!projects.length) throw new Error("표시할 프로젝트가 없습니다.");
+
+    buildTabs(projects);
+
+    // 현재 activeTab이 목록에 있으면 유지, 없으면 첫 번째 선택
+    const ids = projects.map(p => p.id);
+    if (!activeTab || !ids.includes(activeTab)) activeTab = ids[0];
+
+    // 탭 active 표시
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.id === activeTab);
+    });
+
+    await loadProjectData(activeTab);
+
+  } catch (err) {
+    const banner = document.getElementById('error-banner');
+    banner.textContent = '초기화 실패: ' + err.message;
+    banner.style.display = 'block';
+    btn.disabled = false; btn.textContent = '새로고침';
+  }
+
+  if (CONFIG.REFRESH_INTERVAL_MS > 0) {
+    setTimeout(init, CONFIG.REFRESH_INTERVAL_MS);
+  }
+}
+
+// ── Start ────────────────────────────────────────────────────
+init();
 </script>
 </body>
 </html>
