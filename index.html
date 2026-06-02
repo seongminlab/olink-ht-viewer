@@ -441,7 +441,8 @@ const MOCK_SAMPLES = {
 // ── State ────────────────────────────────────────────────────
 let colorMap  = {};
 let colorIdx  = 0;
-let activeTab = null;  // 현재 선택된 project id
+let activeTab = null;   // 현재 선택된 project id
+let dataCache = {};     // { projectId: { project, samples } } — 캐시된 API 응답
 
 function getColor(code) {
   if (!colorMap[code]) { colorMap[code] = PALETTE[colorIdx++ % PALETTE.length]; }
@@ -690,43 +691,63 @@ async function fetchProjectData(projectId) {
   return data;
 }
 
+// ── Render data onto the page (캐시 or 신규 데이터 공통 사용) ──
+function renderProjectData(projectId, data) {
+  colorMap = {}; colorIdx = 0;
+
+  document.getElementById('header-sub').textContent =
+    `${projectId}  |  ${fmtDate(new Date().toISOString())}`;
+
+  buildPlateGrid('plate1');
+  buildPlateGrid('plate2');
+  const plates = assignWells(data.samples || []);
+  renderWells(plates);
+  updateSummary(data.samples || []);
+  buildRequesterLegend();
+
+  const proj = (window._projects || []).find(p => p.id === projectId);
+  updateNote(proj ? proj.description : '');
+}
+
 // ── Load project data (tab click or refresh) ─────────────────
 async function loadProjectData(projectId) {
-  const btn = document.getElementById('refresh-btn');
-  btn.disabled = true; btn.textContent = '로딩 중…';
-  document.getElementById('error-banner').style.display = 'none';
+  const btn    = document.getElementById('refresh-btn');
+  const banner = document.getElementById('error-banner');
+  banner.style.display = 'none';
 
-  // description은 이미 projects 배열에 있으므로 여기서 찾아서 표시
-  const descriptionEl = MOCK_PROJECTS.find(p => p.id === projectId);
-  // (실제 배포 시 projects 변수에서 찾음 — 아래 init()에서 저장)
+  // ── 캐시 히트: API 호출 없이 즉시 렌더 ──
+  if (dataCache[projectId]) {
+    renderProjectData(projectId, dataCache[projectId]);
+    return;
+  }
+
+  // ── 캐시 미스: API 호출 ──
+  btn.disabled = true; btn.textContent = '로딩 중…';
 
   try {
     const data = await fetchProjectData(projectId);
-    colorMap = {}; colorIdx = 0;
-
-    document.getElementById('header-sub').textContent =
-      `${projectId}  |  ${fmtDate(new Date().toISOString())}`;
-
-    buildPlateGrid('plate1');
-    buildPlateGrid('plate2');
-    const plates = assignWells(data.samples || []);
-    renderWells(plates);
-    updateSummary(data.samples || []);
-    buildRequesterLegend();
-
-    // Note: currentProjects는 init()에서 저장한 전역 변수
-    const proj = (window._projects || []).find(p => p.id === projectId);
-    updateNote(proj ? proj.description : '');
+    dataCache[projectId] = data;   // 결과 캐시 저장
+    renderProjectData(projectId, data);
 
     document.getElementById('last-update').textContent =
       '마지막 업데이트: ' + new Date().toLocaleTimeString('ko-KR');
 
   } catch (err) {
-    const banner = document.getElementById('error-banner');
     banner.textContent = '데이터 로드 실패: ' + err.message;
     banner.style.display = 'block';
   } finally {
     btn.disabled = false; btn.textContent = '새로고침';
+  }
+}
+
+// ── Background prefetch: 나머지 탭 데이터를 조용히 미리 받아놓음 ──
+async function prefetchAll(projectIds, skipId) {
+  for (const id of projectIds) {
+    if (id === skipId || dataCache[id]) continue;
+    try {
+      const data = await fetchProjectData(id);
+      dataCache[id] = data;
+    } catch (_) { /* 실패해도 조용히 무시 — 탭 클릭 시 재시도됨 */ }
   }
 }
 
@@ -736,25 +757,30 @@ async function init() {
   btn.disabled = true; btn.textContent = '로딩 중…';
   document.getElementById('error-banner').style.display = 'none';
 
+  // 새로고침 시 캐시 전체 초기화
+  dataCache = {};
+
   try {
     const listData = await fetchProjectList();
     const projects = listData.projects || [];
-    window._projects = projects; // 전역 저장
+    window._projects = projects;
 
     if (!projects.length) throw new Error("표시할 프로젝트가 없습니다.");
 
     buildTabs(projects);
 
-    // 현재 activeTab이 목록에 있으면 유지, 없으면 첫 번째 선택
     const ids = projects.map(p => p.id);
     if (!activeTab || !ids.includes(activeTab)) activeTab = ids[0];
 
-    // 탭 active 표시
     document.querySelectorAll('.tab').forEach(t => {
       t.classList.toggle('active', t.dataset.id === activeTab);
     });
 
+    // 첫 번째 탭 로드 (await — 화면에 먼저 표시)
     await loadProjectData(activeTab);
+
+    // 나머지 탭 백그라운드 프리페치 (await 없이 — 사용자 차단 안 함)
+    prefetchAll(ids, activeTab);
 
   } catch (err) {
     const banner = document.getElementById('error-banner');
